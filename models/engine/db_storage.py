@@ -3,7 +3,7 @@
 from os import getenv
 from models import *
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy import (create_engine)
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from models.base_model import Base
 from models.state import State
@@ -105,7 +105,9 @@ class DBStorage:
         """configuration
         """
         print(self.__engine)
-        #Base.metadata.create_all(self.__engine)
+        metadata = MetaData(bind=self.__engine)
+        print(metadata)
+        Base.metadata.create_all(self.__engine)
         sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sec)
         self.__session = Session()
