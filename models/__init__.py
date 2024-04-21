@@ -22,7 +22,9 @@ from os import getenv
 # print(getenv("HBNB_TYPE_STORAGE"))
 
 if getenv("HBNB_TYPE_STORAGE") == "db":
+    print("test1")
     storage = DBStorage()
 else:
+    print("test2")
     storage = FileStorage()
 storage.reload()
