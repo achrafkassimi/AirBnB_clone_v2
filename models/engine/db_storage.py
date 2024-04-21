@@ -40,29 +40,49 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """returns a dictionary
+        """Query on the curret database session all objects of the given class.
+
+        If cls is None, queries all types of objects.
+
         Return:
-            returns a dictionary of __object
+            Dict of queried classes in the format <class name>.<obj id> = obj.
         """
-        dic = {}
-        if cls:
-            if type(cls) is str:
-                cls = eval(cls)
-            query = self.__session.query(cls)
-            for elem in query:
-                key = "{}.{}".format(type(elem).__name__,
-                                     elem.id)
-                dic[key] = elem
+        if cls is None:
+            objs = self.__session.query(State).all()
+            objs.extend(self.__session.query(City).all())
+            objs.extend(self.__session.query(User).all())
+            objs.extend(self.__session.query(Place).all())
+            objs.extend(self.__session.query(Review).all())
+            objs.extend(self.__session.query(Amenity).all())
         else:
-            lista = [State, City, User,
-                     Place, Review, Amenity]
-            for clase in lista:
-                query = self.__session.query(clase)
-                for elem in query:
-                    key = "{}.{}".format(type(elem).__name__,
-                                         elem.id)
-                    dic[key] = elem
-        return (dic)
+            if type(cls) == str:
+                cls = eval(cls)
+            objs = self.__session.query(cls)
+        return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
+
+        # """returns a dictionary
+        # Return:
+        #     returns a dictionary of __object
+        # """
+        # dic = {}
+        # if cls:
+        #     if type(cls) is str:
+        #         cls = eval(cls)
+        #     query = self.__session.query(cls)
+        #     for elem in query:
+        #         key = "{}.{}".format(type(elem).__name__,
+        #                              elem.id)
+        #         dic[key] = elem
+        # else:
+        #     lista = [State, City, User,
+        #              Place, Review, Amenity]
+        #     for clase in lista:
+        #         query = self.__session.query(clase)
+        #         for elem in query:
+        #             key = "{}.{}".format(type(elem).__name__,
+        #                                  elem.id)
+        #             dic[key] = elem
+        # return (dic)
 
     def new(self, obj):
         """add a new element in the table
@@ -84,12 +104,11 @@ class DBStorage:
         """configuration
         """
         Base.metadata.create_all(self.__engine)
-        sec = sessionmaker(bind=self.__engine,
-                           expire_on_commit=False)
+        sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sec)
-        self.__session = Session
+        self.__session = Session()
 
     def close(self):
         """ calls remove()
         """
-        self.__session.remove()
+        self.__session.close()
