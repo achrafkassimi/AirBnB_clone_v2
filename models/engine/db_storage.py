@@ -28,6 +28,7 @@ class DBStorage:
         db = getenv("HBNB_MYSQL_DB")
         host = getenv("HBNB_MYSQL_HOST")
         env = getenv("HBNB_ENV")
+        type = getenv("HBNB_TYPE_STORAGE")
         # print(user, passwd, db, host, env)
         test = 'mysql+mysqldb://{}:{}@{}/{}'.format(
             user, passwd, host, db)
