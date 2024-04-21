@@ -3,9 +3,9 @@
 from os import getenv
 from models import *
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.ext.declarative import declarative_base
-from models.base_model import Base
+from sqlalchemy import (create_engine)
+# from sqlalchemy.ext.declarative import declarative_base
+from models.base_model import Base, BaseModel
 from models.state import State
 from models.city import City
 from models.user import User
@@ -14,10 +14,9 @@ from models.review import Review
 from models.amenity import Amenity
 
 
-Base = declarative_base()
+# Base = declarative_base()
 
-# classes = {"Amenity": Amenity, "City": City,
-#            "Place": Place, "Review": Review, "State": State, "User": User}
+classes = {"Amenity": Amenity, "City": City, "Place": Place, "Review": Review, "State": State, "User": User}
 
 
 class DBStorage:
@@ -63,30 +62,46 @@ class DBStorage:
         #     objs = self.__session.query(cls)
         # return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
 
-        """returns a dictionary
-        Return:
-            returns a dictionary of __object
-        """
-        dic = {}
+        # """returns a dictionary
+        # Return:
+        #     returns a dictionary of __object
+        # """
+        # dic = {}
+        # if cls:
+        #     if type(cls) is str:
+        #         cls = eval(cls)
+        #     query = self.__session.query(cls)
+        #     for elem in query:
+        #         key = "{}.{}".format(type(elem).__name__,
+        #                              elem.id)
+        #         dic[key] = elem
+        # else:
+        #     lista = [State, City, User,
+        #              Place, Review, Amenity]
+        #     for clase in lista:
+        #         query = self.__session.query(clase)
+        #         for elem in query:
+        #             key = "{}.{}".format(type(elem).__name__,
+        #                                  elem.id)
+        #             dic[key] = elem
+        # return (dic)
+        """ all method """
+        dict_objs = {}
         if cls:
-            if type(cls) is str:
-                cls = eval(cls)
-            query = self.__session.query(cls)
-            for elem in query:
-                key = "{}.{}".format(type(elem).__name__,
-                                     elem.id)
-                dic[key] = elem
-        else:
-            lista = [State, City, User,
-                     Place, Review, Amenity]
-            for clase in lista:
-                query = self.__session.query(clase)
-                for elem in query:
-                    key = "{}.{}".format(type(elem).__name__,
-                                         elem.id)
-                    dic[key] = elem
-        return (dic)
-
+            for name in classes:
+                if cls.__name__ == name:
+                    find = self.__session.query(classes[name]).all()
+                    for i in find:
+                        key = i.__class__.__name__ + '.' + i.id
+                        dict_objs[key] = i
+        elif (cls is None):
+            for name in classes:
+                find = self.__session.query(classes[name]).all()
+                for i in find:
+                    key = i.__class__.__name__ + '.' + i.id
+                    dict_objs[key] = i
+        return dict_objs
+    
     def new(self, obj):
         """add a new element in the table
         """
@@ -102,19 +117,19 @@ class DBStorage:
         """
         if obj is not None:
             self.__session.delete(obj)
+            self.save()
 
-    def reload(self):
-        """configuration
-        """
-        print(self.__engine)
-        metadata = MetaData(bind=self.__engine)
-        print(metadata)
+    def reload(self, remove=False):
+        """ reload method """
         Base.metadata.create_all(self.__engine)
-        sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(sec)
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
+        Session = scoped_session(session_factory)
+        if remove:
+            Session.remove()
         self.__session = Session()
 
     def close(self):
         """ calls remove()
         """
-        self.__session.close()
+        self.reload(remove=True)

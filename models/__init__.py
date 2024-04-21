@@ -26,9 +26,10 @@ Base = declarative_base()
 # print(getenv("HBNB_TYPE_STORAGE"))
 
 if getenv("HBNB_TYPE_STORAGE") == "db":
-    print("test1")
+    print("HBNB_TYPE_STORAGE == db")
     storage = DBStorage()
+    storage.reload()
 else:
-    print("test2")
+    print("FileStorage")
     storage = FileStorage()
-storage.reload()
+    storage.reload()
