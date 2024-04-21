@@ -23,7 +23,7 @@ place_amenity = Table("place_amenity", Base.metadata,
 
 class Place(BaseModel, Base):
     """Representation of Place """
-    if models.storage_t == 'db':
+    if models.storage == 'db':
         __tablename__ = 'places'
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
