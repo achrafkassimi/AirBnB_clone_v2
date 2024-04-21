@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ new class for sqlAlchemy """
 from os import getenv
+from models import *
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import (create_engine)
 from sqlalchemy.ext.declarative import declarative_base
