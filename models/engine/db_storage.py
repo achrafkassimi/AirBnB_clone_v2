@@ -13,6 +13,10 @@ from models.review import Review
 from models.amenity import Amenity
 
 
+classes = {"Amenity": Amenity, "City": City,
+           "Place": Place, "Review": Review, "State": State, "User": User}
+
+
 class DBStorage:
     """ create tables in environmental"""
     __engine = None
@@ -36,29 +40,15 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """returns a dictionary
-        Return:
-            returns a dictionary of __object
-        """
-        dic = {}
-        if cls:
-            if type(cls) is str:
-                cls = eval(cls)
-            query = self.__session.query(cls)
-            for elem in query:
-                key = "{}.{}".format(type(elem).__name__,
-                                     elem.id)
-                dic[key] = elem
-        else:
-            lista = [State, City, User,
-                     Place, Review, Amenity]
-            for clase in lista:
-                query = self.__session.query(clase)
-                for elem in query:
-                    key = "{}.{}".format(type(elem).__name__,
-                                         elem.id)
-                    dic[key] = elem
-        return (dic)
+        """query on the current database session"""
+        new_dict = {}
+        for clss in classes:
+            if cls is None or cls is classes[clss] or cls is clss:
+                objs = self.__session.query(classes[clss]).all()
+                for obj in objs:
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    new_dict[key] = obj
+        return (new_dict)
 
     def new(self, obj):
         """add a new element in the table
@@ -73,8 +63,8 @@ class DBStorage:
     def delete(self, obj=None):
         """delete an element in the table
         """
-        if obj:
-            self.session.delete(obj)
+        if obj is not None:
+            self.__session.delete(obj)
 
     def reload(self):
         """configuration
@@ -83,9 +73,9 @@ class DBStorage:
         sec = sessionmaker(bind=self.__engine,
                            expire_on_commit=False)
         Session = scoped_session(sec)
-        self.__session = Session()
+        self.__session = Session
 
     def close(self):
         """ calls remove()
         """
-        self.__session.close()
+        self.__session.remove()
