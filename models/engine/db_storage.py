@@ -14,6 +14,8 @@ from models.review import Review
 from models.amenity import Amenity
 
 
+Base = declarative_base()
+
 # classes = {"Amenity": Amenity, "City": City,
 #            "Place": Place, "Review": Review, "State": State, "User": User}
 
