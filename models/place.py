@@ -60,18 +60,29 @@ class Place(BaseModel, Base):
     else:
         @property
         def reviews(self):
-            var = models.storage.all()
-            lista = []
-            result = []
-            for key in var:
-                review = key.replace('.', ' ')
-                review = shlex.split(review)
-                if (review[0] == 'Review'):
-                    lista.append(var[key])
-            for elem in lista:
-                if (elem.place_id == self.id):
-                    result.append(elem)
-            return (result)
+            '''FileStorage relationship between Place and Review'''
+            from models import storage
+            from models.review import Review
+
+            review_list = []
+            review_dict = storage.all(Review)
+            for review in review_dict.values():
+                if review.place_id == self.id:
+                    review_list.append(review)
+            return review_list
+
+            # var = models.storage.all()
+            # lista = []
+            # result = []
+            # for key in var:
+            #     review = key.replace('.', ' ')
+            #     review = shlex.split(review)
+            #     if (review[0] == 'Review'):
+            #         lista.append(var[key])
+            # for elem in lista:
+            #     if (elem.place_id == self.id):
+            #         result.append(elem)
+            # return (result)
 
         @property
         def amenities(self):
