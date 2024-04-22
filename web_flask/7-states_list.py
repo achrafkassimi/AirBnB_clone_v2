@@ -18,7 +18,7 @@ def states_list():
     # states = sorted(list(storage.all("State").values()), key=lambda x: x.name)
     states = storage.all(State)
     states_list = list(states.values())
-    print(states,states_list)
+    # print(states,states_list)
     return render_template('7-states_list.html', states=states_list)
 
 

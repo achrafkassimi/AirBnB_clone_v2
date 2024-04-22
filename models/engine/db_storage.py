@@ -51,7 +51,7 @@ class DBStorage:
         dic = {}
         query4 = []
         if cls:
-            print("123")
+            # print("123")
             if type(cls) is str:
                 cls = eval(cls)
             query4 = self.__session.query(cls)
@@ -60,7 +60,7 @@ class DBStorage:
                 key = "{}.{}".format(type(elem).__name__, elem.id)
                 dic[key] = elem
         else:
-            print("321")
+            # print("321")
             lista = [State, City, User, Place, Review, Amenity]
             for clase in lista:
                 query4 = self.__session.query(clase)
