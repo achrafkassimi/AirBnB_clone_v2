@@ -49,23 +49,25 @@ class DBStorage:
             returns a dictionary of __object
         """
         dic = {}
+        query4 = []
         if cls:
             print("123")
             if type(cls) is str:
                 cls = eval(cls)
-            query = self.__session.query(cls)
-            for elem in query:
+            query4 = self.__session.query(cls)
+            print(query4)
+            for elem in query4:
                 key = "{}.{}".format(type(elem).__name__, elem.id)
                 dic[key] = elem
         else:
             print("321")
             lista = [State, City, User, Place, Review, Amenity]
             for clase in lista:
-                query = self.__session.query(clase)
-                for elem in query:
+                query4 = self.__session.query(clase)
+                for elem in query4:
                     key = "{}.{}".format(type(elem).__name__, elem.id)
                     dic[key] = elem
-        return (dic)
+        return dic
     
     def new(self, obj):
         """add a new element in the table
@@ -94,4 +96,4 @@ class DBStorage:
     def close(self):
         """ calls remove()
         """
-        self.__session.remove()
+        self.__session.close()
