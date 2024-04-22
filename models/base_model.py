@@ -35,8 +35,10 @@ class BaseModel:
 
     def __str__(self):
         """Returns a string representation of the instance"""
-        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        # cls = (str(type(self)).split('.')[-1]).split('\'')[0]
+        # return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+        return "[{}] ({}) {}".format(
+            type(self).__name__, self.id, self.__dict__)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
@@ -46,19 +48,30 @@ class BaseModel:
         storage.save()
 
     def to_dict(self):
-        """Convert instance into dict format"""
-        dictionary = {}
-        dictionary.update(self.__dict__)
+        """creates dictionary of the class  and returns
+        Return:
+            returns a dictionary of all the key values in __dict__
+        """
+        my_dict = dict(self.__dict__)
+        my_dict["__class__"] = str(type(self).__name__)
+        my_dict["created_at"] = self.created_at.isoformat()
+        my_dict["updated_at"] = self.updated_at.isoformat()
+        if '_sa_instance_state' in my_dict.keys():
+            del my_dict['_sa_instance_state']
+        return my_dict
+        # """Convert instance into dict format"""
+        # dictionary = {}
+        # dictionary.update(self.__dict__)
 
-        # remove the key if it exists
-        if (dictionary.get("_sa_instance_state")):
-            dictionary.pop("_sa_instance_state")
+        # # remove the key if it exists
+        # if (dictionary.get("_sa_instance_state")):
+        #     dictionary.pop("_sa_instance_state")
 
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
-        dictionary['created_at'] = self.created_at.isoformat()
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        return dictionary
+        # dictionary.update({'__class__':
+        #                   (str(type(self)).split('.')[-1]).split('\'')[0]})
+        # dictionary['created_at'] = self.created_at.isoformat()
+        # dictionary['updated_at'] = self.updated_at.isoformat()
+        # return dictionary
         # """Convert instance into dict format"""
         # dictionary = {}
         # dictionary.update(self.__dict__)

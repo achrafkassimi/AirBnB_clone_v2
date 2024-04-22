@@ -32,75 +32,38 @@ class DBStorage:
         env = getenv("HBNB_ENV")
         type = getenv("HBNB_TYPE_STORAGE")
         # print(user, passwd, db, host, env)
-        test = 'mysql+mysqldb://{}:{}@{}/{}'.format(
-            user, passwd, host, db)
-        print(test)
+        # test = 'mysql+mysqldb://{}:{}@{}/{}'.format( user, passwd, host, db)
+        # print(test)
 
-        self.__engine = create_engine(test, pool_pre_ping=True)
+        self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
+                                      .format(user, passwd, host, db),
+                                      pool_pre_ping=True)
 
         if env == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Query on the curret database session all objects of the given class.
-
-        If cls is None, queries all types of objects.
-
-        Return:
-            Dict of queried classes in the format <class name>.<obj id> = obj.
         """
-        # if cls is None:
-        #     objs = self.__session.query(State).all()
-        #     objs.extend(self.__session.query(City).all())
-        #     objs.extend(self.__session.query(User).all())
-        #     objs.extend(self.__session.query(Place).all())
-        #     objs.extend(self.__session.query(Review).all())
-        #     objs.extend(self.__session.query(Amenity).all())
-        # else:
-        #     if type(cls) == str:
-        #         cls = eval(cls)
-        #     objs = self.__session.query(cls)
-        # return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
-
-        # """returns a dictionary
-        # Return:
-        #     returns a dictionary of __object
-        # """
-        # dic = {}
-        # if cls:
-        #     if type(cls) is str:
-        #         cls = eval(cls)
-        #     query = self.__session.query(cls)
-        #     for elem in query:
-        #         key = "{}.{}".format(type(elem).__name__,
-        #                              elem.id)
-        #         dic[key] = elem
-        # else:
-        #     lista = [State, City, User,
-        #              Place, Review, Amenity]
-        #     for clase in lista:
-        #         query = self.__session.query(clase)
-        #         for elem in query:
-        #             key = "{}.{}".format(type(elem).__name__,
-        #                                  elem.id)
-        #             dic[key] = elem
-        # return (dic)
-        """ all method """
-        dict_objs = {}
+        returns a dictionary
+        Return:
+            returns a dictionary of __object
+        """
+        dic = {}
         if cls:
-            for name in classes:
-                if cls.__name__ == name:
-                    find = self.__session.query(classes[name]).all()
-                    for i in find:
-                        key = i.__class__.__name__ + '.' + i.id
-                        dict_objs[key] = i
-        elif (cls is None):
-            for name in classes:
-                find = self.__session.query(classes[name]).all()
-                for i in find:
-                    key = i.__class__.__name__ + '.' + i.id
-                    dict_objs[key] = i
-        return dict_objs
+            if type(cls) is str:
+                cls = eval(cls)
+            query = self.__session.query(cls)
+            for elem in query:
+                key = "{}.{}".format(type(elem).__name__, elem.id)
+                dic[key] = elem
+        else:
+            lista = [State, City, User, Place, Review, Amenity]
+            for clase in lista:
+                query = self.__session.query(clase)
+                for elem in query:
+                    key = "{}.{}".format(type(elem).__name__, elem.id)
+                    dic[key] = elem
+        return (dic)
     
     def new(self, obj):
         """add a new element in the table
@@ -122,14 +85,11 @@ class DBStorage:
     def reload(self, remove=False):
         """ reload method """
         Base.metadata.create_all(self.__engine)
-        session_factory = sessionmaker(bind=self.__engine,
-                                       expire_on_commit=False)
-        Session = scoped_session(session_factory)
-        if remove:
-            Session.remove()
+        sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(sec)
         self.__session = Session()
 
     def close(self):
         """ calls remove()
         """
-        self.reload(remove=True)
+        self.__session.close()
