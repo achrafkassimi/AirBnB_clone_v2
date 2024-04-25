@@ -9,13 +9,14 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from models.place import Place
 from os import getenv
+import models
 
 
 class City(BaseModel, Base):
     """
     This is the class for City
     """
-    if getenv("HBNB_TYPE_STORAGE") == "db":
+    if models.storage_t == "db":
         __tablename__ = 'cities'
         state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
         name = Column(String(128), nullable=False)

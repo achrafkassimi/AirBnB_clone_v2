@@ -7,7 +7,7 @@ import sqlalchemy
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
-if getenv("HBNB_TYPE_STORAGE") == "db":
+if models.storage_t == "db":
     place_amenity = Table('place_amenity', Base.metadata,
                       Column("place_id", String(60), ForeignKey("places.id",
                                                                  onupdate='CASCADE', ondelete='CASCADE'),primary_key=True),
@@ -19,7 +19,7 @@ class Place(BaseModel, Base):
     """
     This is the class for Place
     """
-    if getenv("HBNB_TYPE_STORAGE") == "db":
+    if models.storage_t == "db":
         __tablename__ = "places"
         city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
         user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
@@ -54,7 +54,7 @@ class Place(BaseModel, Base):
         super().__init__(*args, **kwargs)
 
     
-    if getenv("HBNB_TYPE_STORAGE") != "db":
+    if models.storage_t != "db":
         @property
         def reviews(self):
             '''FileStorage relationship between Place and Review'''

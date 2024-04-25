@@ -13,8 +13,9 @@ from models.amenity import Amenity
 from models.review import Review
 from os import getenv
 
+storage_t = getenv("HBNB_TYPE_STORAGE")
 
-if getenv("HBNB_TYPE_STORAGE") == "db":
+if storage_t == "db":
     # print("HBNB_TYPE_STORAGE == db")
     storage = DBStorage()
 else:
