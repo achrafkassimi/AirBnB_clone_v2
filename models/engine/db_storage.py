@@ -50,35 +50,36 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """ all method """
-        dict_objs = {}
-        if cls:
-            for name in classes:
-                if cls.__name__ == name:
-                    find = self.__session.query(classes[name]).all()
-                    for i in find:
-                        key = i.__class__.__name__ + '.' + i.id
-                        dict_objs[key] = i
-        elif (cls is None):
-            for name in classes:
-                find = self.__session.query(classes[name]).all()
-                for i in find:
-                    key = i.__class__.__name__ + '.' + i.id
-                    dict_objs[key] = i
-        return dict_objs
-        # """
-        # returns a dictionary
-        # Return:
-        #     returns a dictionary of __object
-        # """
-        # new_dict = {}
-        # for clss in classes:
-        #     if cls is None or cls is classes[clss] or cls is clss:
-        #         objs = self.__session.query(classes[clss]).all()
-        #         for obj in objs:
-        #             key = obj.__class__.__name__ + '.' + obj.id
-        #             new_dict[key] = obj
-        # return (new_dict)
+        # """ all method """
+        # dict_objs = {}
+        # print(cls)
+        # if cls:
+        #     for name in classes:
+        #         if cls.__name__ == name:
+        #             find = self.__session.query(classes[name]).all()
+        #             for i in find:
+        #                 key = i.__class__.__name__ + '.' + i.id
+        #                 dict_objs[key] = i
+        # elif (cls is None):
+        #     for name in classes:
+        #         find = self.__session.query(classes[name]).all()
+        #         for i in find:
+        #             key = i.__class__.__name__ + '.' + i.id
+        #             dict_objs[key] = i
+        # return dict_objs
+        """
+        returns a dictionary
+        Return:
+            returns a dictionary of __object
+        """
+        new_dict = {}
+        for clss in classes:
+            if cls is None or cls is classes[clss] or cls is clss:
+                objs = self.__session.query(classes[clss]).all()
+                for obj in objs:
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    new_dict[key] = obj
+        return (new_dict)
 
     def new(self, obj):
         """
