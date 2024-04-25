@@ -1,16 +1,18 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
-from sqlalchemy.ext.declarative import declarative_base
-from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Table, String, Integer, Float, ForeignKey
-from sqlalchemy.orm import relationship
-from os import getenv
 import models
+from models.base_model import BaseModel, Base
+from os import getenv
+import sqlalchemy
+from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
+from sqlalchemy.orm import relationship
 
 if getenv("HBNB_TYPE_STORAGE") == "db":
     place_amenity = Table("place_amenity", Base.metadata,
-                      Column("place_id", String(60), ForeignKey("places.id", onupdate='CASCADE', ondelete='CASCADE'),primary_key=True),
-                      Column("amenity_id", String(60), ForeignKey("amenities.id", onupdate='CASCADE', ondelete='CASCADE'), primary_key=True))
+                      Column("place_id", String(60), ForeignKey("places.id",
+                                                                 onupdate='CASCADE', ondelete='CASCADE'),primary_key=True),
+                      Column("amenity_id", String(60), ForeignKey("amenities.id",
+                                                                 onupdate='CASCADE', ondelete='CASCADE'), primary_key=True))
 
 
 class Place(BaseModel, Base):
@@ -27,10 +29,11 @@ class Place(BaseModel, Base):
         number_bathrooms = Column(Integer, nullable=False, default=0)
         max_guest = Column(Integer, nullable=False, default=0)
         price_by_night = Column(Integer, nullable=False, default=0)
-        latitude = Column(Float)
-        longitude = Column(Float)
+        latitude = Column(Float, nullable=True)
+        longitude = Column(Float, nullable=True)
         reviews = relationship("Review", backref="place")
-        amenities = relationship("Amenity", secondary="place_amenity", viewonly=False, back_populates="place_amenities")
+        amenities = relationship("Amenity", secondary="place_amenity",
+                                 back_populates="place_amenities", viewonly=False)
     else:
         city_id = ""
         user_id = ""
@@ -51,15 +54,14 @@ class Place(BaseModel, Base):
         super().__init__(*args, **kwargs)
 
     
-    if getenv("HBNB_TYPE_STORAGE") == "db":
+    if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def reviews(self):
             '''FileStorage relationship between Place and Review'''
-            from models import storage
             from models.review import Review
 
             review_list = []
-            review_dict = storage.all(Review)
+            review_dict = models.storage.all(Review)
             for review in review_dict.values():
                 if review.place_id == self.id:
                     review_list.append(review)
