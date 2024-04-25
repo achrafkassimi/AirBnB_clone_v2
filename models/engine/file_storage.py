@@ -64,7 +64,6 @@ class FileStorage:
         for key in jo:
             self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
 
-
     def delete(self, obj=None):
         """
         Delete obj from __objects if it's inside 
@@ -75,7 +74,6 @@ class FileStorage:
             key = obj.__class__.__name__ + '.' + obj.id
             if key in self.__objects:
                 del self.__objects[key]
-
 
     def close(self):
         """
