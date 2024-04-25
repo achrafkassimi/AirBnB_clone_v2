@@ -16,7 +16,7 @@ from models.review import Review
 from models.amenity import Amenity
 
 classes = {
-            "Amenity": Amenity, 
+            "Amenity": Amenity,
             "City": City,
             "Place": Place,
             "Review": Review,

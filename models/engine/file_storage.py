@@ -13,7 +13,7 @@ from models.review import Review
 import shlex
 
 classes = {
-            "Amenity": Amenity, 
+            "Amenity": Amenity,
             "City": City,
             "Place": Place,
             "Review": Review,
