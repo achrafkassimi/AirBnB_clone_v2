@@ -2,7 +2,8 @@
 """
 create a unique FileStorage instance for your application
 """
-
+from models.engine.db_storage import DBStorage
+from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
@@ -16,11 +17,10 @@ import os
 
 if getenv("HBNB_TYPE_STORAGE") == "db":
     # print("HBNB_TYPE_STORAGE == db")
-    from models.engine.db_storage import DBStorage
     storage = DBStorage()
-    storage.reload()
 else:
     # print("FileStorage")
-    from models.engine.file_storage import FileStorage
     storage = FileStorage()
-    storage.reload()
+
+
+storage.reload()
