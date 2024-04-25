@@ -17,7 +17,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 classes = {
             "Amenity": Amenity,
-            "BaseModel": BaseModel,
+            # "BaseModel": BaseModel,
             "City": City,
             "Place": Place,
             "Review": Review,
