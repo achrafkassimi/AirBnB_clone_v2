@@ -14,7 +14,7 @@ class State(BaseModel, Base):
     This is the class for State
     """
     if getenv("HBNB_TYPE_STORAGE") == "db":
-        __tablename__ = "states"
+        __tablename__ = 'states'
         name = Column(String(128), nullable=False)
         cities = relationship("City", backref="state")
     else:
