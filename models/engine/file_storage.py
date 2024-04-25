@@ -70,7 +70,7 @@ class FileStorage:
 
     def delete(self, obj=None):
         """
-        Delete obj from __objects if it's inside 
+        Delete obj from __objects if it's inside
             - if obj is equal to None,
         the method should not do anything
         """
