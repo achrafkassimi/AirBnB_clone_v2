@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-""" new class for sqlAlchemy """
+"""
+new class for DBStorage
+"""
 from os import getenv
 from models import *
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -14,9 +16,7 @@ from models.review import Review
 from models.amenity import Amenity
 
 
-# Base = declarative_base()
-
-# classes = {"Amenity": Amenity, "City": City, "Place": Place, "Review": Review, "State": State, "User": User}
+classes = {"Amenity": Amenity, "City": City, "Place": Place, "Review": Review, "State": State, "User": User}
 
 
 class DBStorage:
@@ -30,7 +30,7 @@ class DBStorage:
         db = getenv("HBNB_MYSQL_DB")
         host = getenv("HBNB_MYSQL_HOST")
         env = getenv("HBNB_ENV")
-        type = getenv("HBNB_TYPE_STORAGE")
+
         # print(user, passwd, db, host, env)
         # test = 'mysql+mysqldb://{}:{}@{}/{}'.format( user, passwd, host, db)
         # print(test)
@@ -48,52 +48,46 @@ class DBStorage:
         Return:
             returns a dictionary of __object
         """
-        dic = {}
-        query4 = []
-        if cls:
-            # print("123")
-            if type(cls) is str:
-                cls = eval(cls)
-            query4 = self.__session.query(cls)
-            print(query4)
-            for elem in query4:
-                key = "{}.{}".format(type(elem).__name__, elem.id)
-                dic[key] = elem
-        else:
-            # print("321")
-            lista = [State, City, User, Place, Review, Amenity]
-            for clase in lista:
-                query4 = self.__session.query(clase)
-                for elem in query4:
-                    key = "{}.{}".format(type(elem).__name__, elem.id)
-                    dic[key] = elem
-        return dic
+        new_dict = {}
+        for clss in classes:
+            if cls is None or cls is classes[clss] or cls is clss:
+                objs = self.__session.query(classes[clss]).all()
+                for obj in objs:
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    new_dict[key] = obj
+        return (new_dict)
     
     def new(self, obj):
-        """add a new element in the table
+        """
+        add a new element in the table
         """
         self.__session.add(obj)
 
     def save(self):
-        """save changes
+        """
+        save changes
         """
         self.__session.commit()
 
     def delete(self, obj=None):
-        """delete an element in the table
+        """
+        delete an element in the table
         """
         if obj is not None:
             self.__session.delete(obj)
-            self.save()
+            # self.save()
 
-    def reload(self, remove=False):
-        """ reload method """
+    def reload(self):
+        """
+        reload method
+        """
         Base.metadata.create_all(self.__engine)
         sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sec)
         self.__session = Session()
 
     def close(self):
-        """ calls remove()
         """
-        self.__session.close()
+        calls remove()
+        """
+        self.__session.remove()
