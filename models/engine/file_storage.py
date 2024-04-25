@@ -13,7 +13,8 @@ from models.review import Review
 import shlex
 
 
-classes = {"Amenity": Amenity, "City": City, "Place": Place, "Review": Review, "State": State, "User": User}
+classes = {"Amenity": Amenity, "City": City, "Place": Place,
+           "Review": Review, "State": State, "User": User}
 
 
 class FileStorage:
@@ -27,7 +28,7 @@ class FileStorage:
         """
         Returns a dictionary of models currently in storage.
         Args:
-            cls (class, optional): 
+            cls (class, optional):
                 If specified, filters the result to include
                 only objects of the specified class.
         Returns:
@@ -55,16 +56,14 @@ class FileStorage:
         with open(self.__file_path, 'w') as f:
             json.dump(json_objects, f)
 
-
     def reload(self):
         """Loads storage dictionary from file"""
-        try:
-            with open(self.__file_path, 'r') as f:
-                jo = json.load(f)
-            for key in jo:
-                self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
-        except:
-            pass
+
+        with open(self.__file_path, 'r') as f:
+            jo = json.load(f)
+        for key in jo:
+            self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
+
 
     def delete(self, obj=None):
         """

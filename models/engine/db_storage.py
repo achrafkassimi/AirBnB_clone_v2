@@ -16,7 +16,8 @@ from models.review import Review
 from models.amenity import Amenity
 
 
-classes = {"Amenity": Amenity, "City": City, "Place": Place, "Review": Review, "State": State, "User": User}
+classes = {"Amenity": Amenity, "City": City, "Place": Place,
+            "Review": Review, "State": State, "User": User}
 
 
 class DBStorage:
@@ -56,7 +57,7 @@ class DBStorage:
                     key = obj.__class__.__name__ + '.' + obj.id
                     new_dict[key] = obj
         return (new_dict)
-    
+
     def new(self, obj):
         """
         add a new element in the table
