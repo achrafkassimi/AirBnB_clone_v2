@@ -16,6 +16,7 @@ def states_list():
     in alphabetical order
     """
     states = storage.all("State")
+    print(states)
     states_list = list(states.values())
     return render_template('7-states_list.html', 
                            states=states_list)
