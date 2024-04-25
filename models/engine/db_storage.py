@@ -2,18 +2,18 @@
 """
 new class for DBStorage
 """
-from os import getenv
-from models import *
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy import (create_engine)
-# from sqlalchemy.ext.declarative import declarative_base
-from models.base_model import Base, BaseModel
-from models.state import State
+import models
+from models.amenity import Amenity
+from models.base_model import BaseModel, Base
 from models.city import City
-from models.user import User
 from models.place import Place
 from models.review import Review
-from models.amenity import Amenity
+from models.state import State
+from models.user import User
+from os import getenv
+import sqlalchemy
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 classes = {
             "Amenity": Amenity,
@@ -25,7 +25,9 @@ classes = {
 
 
 class DBStorage:
-    """ create tables in environmental"""
+    """
+    interaacts with the MySQL database
+    """
     __engine = None
     __session = None
 
@@ -89,7 +91,7 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
         sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sec)
-        self.__session = Session()
+        self.__session = Session
 
     def close(self):
         """
