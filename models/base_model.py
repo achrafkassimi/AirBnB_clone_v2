@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, DateTime, String
-from models import storage
+# from models import storage
 from os import getenv
 
 
