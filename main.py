@@ -9,12 +9,17 @@ from models.city import City
 """
  Objects creations
 """
+print("----------------------------------------------------------------")
+
 state_1 = State(name="California")
 print("New state: {}".format(state_1))
 state_1.save()
 state_2 = State(name="Arizona")
 print("New state: {}".format(state_2))
 state_2.save()
+
+print("----------------------------------------------------------------")
+
 
 city_1_1 = City(state_id=state_1.id, name="Napa")
 print("New city: {} in the state: {}".format(city_1_1, state_1))
@@ -30,8 +35,12 @@ city_2_1.save()
 """
  Verification
 """
-print("")
+print("----------------------------------------------------------------")
 all_states = storage.all(State)
+# print(all_states)
+
 for state_id, state in all_states.items():
     for city in state.cities:
         print("Find the city {} in the state {}".format(city, state))
+
+print("----------------------------------------------------------------")
