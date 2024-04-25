@@ -62,11 +62,13 @@ class FileStorage:
 
     def reload(self):
         """Loads storage dictionary from file"""
-
-        with open(self.__file_path, 'r') as f:
-            jo = json.load(f)
-        for key in jo:
-            self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
+        try:
+            with open(self.__file_path, 'r') as f:
+                jo = json.load(f)
+            for key in jo:
+                self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
+        except Exception:
+            print(Exception)
 
     def delete(self, obj=None):
         """
