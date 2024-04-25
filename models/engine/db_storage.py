@@ -50,19 +50,35 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """
-        returns a dictionary
-        Return:
-            returns a dictionary of __object
-        """
-        new_dict = {}
-        for clss in classes:
-            if cls is None or cls is classes[clss] or cls is clss:
-                objs = self.__session.query(classes[clss]).all()
-                for obj in objs:
-                    key = obj.__class__.__name__ + '.' + obj.id
-                    new_dict[key] = obj
-        return (new_dict)
+        """ all method """
+        dict_objs = {}
+        if cls:
+            for name in classes:
+                if cls.__name__ == name:
+                    find = self.__session.query(classes[name]).all()
+                    for i in find:
+                        key = i.__class__.__name__ + '.' + i.id
+                        dict_objs[key] = i
+        elif (cls is None):
+            for name in classes:
+                find = self.__session.query(classes[name]).all()
+                for i in find:
+                    key = i.__class__.__name__ + '.' + i.id
+                    dict_objs[key] = i
+        return dict_objs
+        # """
+        # returns a dictionary
+        # Return:
+        #     returns a dictionary of __object
+        # """
+        # new_dict = {}
+        # for clss in classes:
+        #     if cls is None or cls is classes[clss] or cls is clss:
+        #         objs = self.__session.query(classes[clss]).all()
+        #         for obj in objs:
+        #             key = obj.__class__.__name__ + '.' + obj.id
+        #             new_dict[key] = obj
+        # return (new_dict)
 
     def new(self, obj):
         """
@@ -82,19 +98,33 @@ class DBStorage:
         """
         if obj is not None:
             self.__session.delete(obj)
-            # self.save()
+            self.save()
 
-    def reload(self):
-        """
-        reload method
-        """
+    def reload(self, remove=False):
+        """ reload method """
         Base.metadata.create_all(self.__engine)
-        sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(sec)
-        self.__session = Session
+        session_factory = sessionmaker(bind=self.__engine,
+                                       expire_on_commit=False)
+        Session = scoped_session(session_factory)
+        if remove:
+            Session.remove()
+        self.__session = Session()
 
     def close(self):
-        """
-        calls remove()
-        """
-        self.__session.remove()
+        """ close method """
+        self.reload(remove=True)
+
+    # def reload(self):
+    #     """
+    #     reload method
+    #     """
+    #     Base.metadata.create_all(self.__engine)
+    #     sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
+    #     Session = scoped_session(sec)
+    #     self.__session = Session
+
+    # def close(self):
+    #     """
+    #     calls remove()
+    #     """
+    #     self.__session.remove()
