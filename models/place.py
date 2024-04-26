@@ -28,6 +28,8 @@ class Place(BaseModel, Base):
     """
     if models.storage_t == "db":
         __tablename__ = "places"
+        amenities = relationship('Amenity', secondary='place_amenity',
+                                 back_populates='place_amenities', viewonly=False)
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)
@@ -39,8 +41,7 @@ class Place(BaseModel, Base):
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
         reviews = relationship('Review', backref='place')
-        amenities = relationship('Amenity', secondary='place_amenity',
-                                 back_populates='place_amenities', viewonly=False)
+
     else:
         city_id = ""
         user_id = ""
