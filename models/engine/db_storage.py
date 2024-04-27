@@ -15,15 +15,6 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-classes = {
-            "Amenity": Amenity,
-            # "BaseModel": BaseModel,
-            "City": City,
-            "Place": Place,
-            "Review": Review,
-            "State": State,
-            "User": User}
-
 
 class DBStorage:
     """
@@ -41,36 +32,34 @@ class DBStorage:
         db = getenv("HBNB_MYSQL_DB")
         host = getenv("HBNB_MYSQL_HOST")
         env = getenv("HBNB_ENV")
-
-        # print(user, passwd, db, host, env)
-        # test = 'mysql+mysqldb://{}:{}@{}/{}'.format( user, passwd, host, db)
-        # print(test)
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
-                                      .format(user, passwd, host, db),
-                                      pool_pre_ping=True)
+                                    .format(user, passwd, host, db),
+                                    pool_pre_ping=True)
 
         if env == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """
-        Query on the curret database session all objects of the given class.
-        If cls is None, queries all types of objects.
+        """returns a dictionary
         Return:
-            Dict of queried classes in the format <class name>.<obj id> = obj.
+            returns a dictionary of __object
         """
-        if cls is None:
-            objs = self.__session.query(State).all()
-            objs.extend(self.__session.query(City).all())
-            objs.extend(self.__session.query(User).all())
-            objs.extend(self.__session.query(Place).all())
-            objs.extend(self.__session.query(Review).all())
-            objs.extend(self.__session.query(Amenity).all())
-        else:
-            if type(cls) == str:
+        dic = {}
+        if cls:
+            if type(cls) is str:
                 cls = eval(cls)
-            objs = self.__session.query(cls)
-        return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
+            query = self.__session.query(cls)
+            for elem in query:
+                key = "{}.{}".format(type(elem).__name__, elem.id)
+                dic[key] = elem
+        else:
+            lista = [State, City, User, Place, Review, Amenity]
+            for clase in lista:
+                query = self.__session.query(clase)
+                for elem in query:
+                    key = "{}.{}".format(type(elem).__name__, elem.id)
+                    dic[key] = elem
+        return (dic)
 
     def new(self, obj):
         """
@@ -90,49 +79,15 @@ class DBStorage:
         """
         if obj is not None:
             self.__session.delete(obj)
-            # self.save()
 
-    def reload(self, remove=False):
+    def reload(self):
         """ reload method """
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(bind=self.__engine,
-                                       expire_on_commit=False)
+                                    expire_on_commit=False)
         Session = scoped_session(session_factory)
-        if remove:
-            Session.remove()
         self.__session = Session()
 
     def close(self):
         """ close method """
-        # self.__session.close()
-        self.reload(remove=True)
-
-    # def reload(self):
-    #     """
-    #     reload method
-    #     """
-    #     Base.metadata.create_all(self.__engine)
-    #     sec = sessionmaker(bind=self.__engine, expire_on_commit=False)
-    #     Session = scoped_session(sec)
-    #     self.__session = Session
-    #
-    # def close(self):
-    #     """
-    #     calls remove()
-    #     """
-    #     self.__session.remove()
-    #
-    # def all(self, cls=None):
-    # """
-    # returns a dictionary
-    # Return:
-    #     returns a dictionary of __object
-    # """
-    # new_dict = {}
-    # for clss in classes:
-    #     if cls is None or cls is classes[clss] or cls is clss:
-    #         objs = self.__session.query(classes[clss]).all()
-    #         for obj in objs:
-    #             key = obj.__class__.__name__ + '.' + obj.id
-    #             new_dict[key] = obj
-    # return (new_dict)
+        self.__session.close()
