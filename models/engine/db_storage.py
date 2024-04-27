@@ -40,7 +40,8 @@ class DBStorage:
                                       format(HBNB_MYSQL_USER,
                                              HBNB_MYSQL_PWD,
                                              HBNB_MYSQL_HOST,
-                                             HBNB_MYSQL_DB), echo=True)
+                                             HBNB_MYSQL_DB), echo=True,
+                                             encoding='latin1')
         if HBNB_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
