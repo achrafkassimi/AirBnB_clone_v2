@@ -15,6 +15,7 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import text
 
 classes = {"Amenity": Amenity, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
@@ -42,6 +43,11 @@ class DBStorage:
             'mysql+mysqldb://{}:{}@{}/{}?charset=latin1'
             .format(HBNB_MYSQL_USER, HBNB_MYSQL_PWD,
                     HBNB_MYSQL_HOST, HBNB_MYSQL_DB))
+        print(self.__engine)
+        with self.__engine.connect() as con:
+            with open("setup_mysql_dev.sql") as file:
+                query = text(file.read())
+                con.execute(query)
         # , pool_pre_ping=True
 
         if HBNB_ENV == "test":
@@ -93,6 +99,7 @@ class DBStorage:
         """ reload method """
         # Base.metadata.drop_all(bind = self.__engine)
         # Base.metadata.create_all(self.__engine)
+
         # print(self.__engine)
         ses = sessionmaker(bind=self.__engine, expire_on_commit=False)
         # print(ses)
