@@ -5,7 +5,8 @@
 --   Grants SELECT privilege for hbnb_dev on performance.
 
 -- Create the database if it doesn't exist
-CREATE DATABASE IF NOT EXISTS hbnb_dev_db;
+-- CREATE DATABASE IF NOT EXISTS hbnb_dev_db;
+CREATE DATABASE IF NOT EXISTS hbnb_dev_db CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 
 -- Create the user (password 'hbnb_dev_pwd') if it doesn't exist
 CREATE USER IF NOT EXISTS 'hbnb_dev'@'localhost' IDENTIFIED BY 'hbnb_dev_pwd';
