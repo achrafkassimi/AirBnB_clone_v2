@@ -43,13 +43,7 @@ class DBStorage:
             'mysql+mysqldb://{}:{}@{}/{}?charset=latin1'
             .format(HBNB_MYSQL_USER, HBNB_MYSQL_PWD,
                     HBNB_MYSQL_HOST, HBNB_MYSQL_DB))
-        print(self.__engine)
-        with self.__engine.connect() as con:
-            with open("setup_mysql_dev.sql") as file:
-                query = text(file.read())
-                con.execute(query)
-        # , pool_pre_ping=True
-
+        # print(self.__engine)
         if HBNB_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
@@ -99,8 +93,7 @@ class DBStorage:
         """ reload method """
         # Base.metadata.drop_all(bind = self.__engine)
         # Base.metadata.create_all(self.__engine)
-
-        # print(self.__engine)
+        print(Base.metadata.create_all(self.__engine))
         ses = sessionmaker(bind=self.__engine, expire_on_commit=False)
         # print(ses)
         Session = scoped_session(ses)
