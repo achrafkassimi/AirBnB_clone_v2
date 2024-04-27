@@ -90,8 +90,10 @@ class DBStorage:
 
     def reload(self):
         """ reload method """
-        Base.metadata.drop_all(bind = self.__engine)
-        Base.metadata.create_all(self.__engine)
+        # Base.metadata.drop_all(bind = self.__engine)
+        # Base.metadata.create_all(self.__engine)
+        Base.metadata.tables["cities"].create(bind = self.__engine)
+        Base.metadata.tables["states"].create(bind = self.__engine)
         # print(self.__engine)
         ses = sessionmaker(bind=self.__engine, expire_on_commit=False)
         # print(ses)
