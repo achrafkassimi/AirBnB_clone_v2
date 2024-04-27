@@ -20,7 +20,6 @@ class City(BaseModel, Base):
     if models.storage_t == "db":
         name = Column(String(128), nullable=False)
         state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
-        # state = relationship("State")
         places = relationship('Place', backref='cities', cascade="delete")
     else:
         state_id = ""

@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS `amenities`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `amenities` (
   `id` varchar(60) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   `name` varchar(128) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -49,10 +49,10 @@ DROP TABLE IF EXISTS `cities`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cities` (
   `id` varchar(60) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  `state_id` varchar(60) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   `name` varchar(128) NOT NULL,
+  `state_id` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `state_id` (`state_id`),
   CONSTRAINT `cities_ibfk_1` FOREIGN KEY (`state_id`) REFERENCES `states` (`id`)
@@ -103,8 +103,8 @@ DROP TABLE IF EXISTS `places`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `places` (
   `id` varchar(60) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   `city_id` varchar(60) NOT NULL,
   `user_id` varchar(60) NOT NULL,
   `name` varchar(128) NOT NULL,
@@ -141,11 +141,11 @@ DROP TABLE IF EXISTS `reviews`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reviews` (
   `id` varchar(60) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `text` varchar(1024) NOT NULL,
   `place_id` varchar(60) NOT NULL,
   `user_id` varchar(60) NOT NULL,
-  `text` varchar(1024) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `place_id` (`place_id`),
   KEY `user_id` (`user_id`),
@@ -172,8 +172,8 @@ DROP TABLE IF EXISTS `states`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `states` (
   `id` varchar(60) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   `name` varchar(128) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -197,8 +197,8 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` varchar(60) NOT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
   `email` varchar(128) NOT NULL,
   `password` varchar(128) NOT NULL,
   `first_name` varchar(128) DEFAULT NULL,
@@ -225,4 +225,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-25 12:59:47
+-- Dump completed on 2024-04-21 20:34:21
