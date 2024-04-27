@@ -55,7 +55,7 @@ class FileStorage:
                 jo = json.load(f)
             for key in jo:
                 self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
-        except:
+        except (AttributeError, KeyError):
             pass
 
     def delete(self, obj=None):
@@ -67,7 +67,7 @@ class FileStorage:
 
     def close(self):
         """
-        call reload() 
+        call reload()
         method for deserializing the JSON file to objects
         """
         self.reload()
