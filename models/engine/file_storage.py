@@ -10,18 +10,31 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
-        if cls:
-            temp = {}
-            for key in FileStorage.__objects.keys():
-                if cls.__name__ in key:
-                    temp[key] = FileStorage.__objects[key]
-            return temp
-        else:
-            return FileStorage.__objects
+        # if cls:
+        #     temp = {}
+        #     for key in FileStorage.__objects.keys():
+        #         if cls.__name__ in key:
+        #             temp[key] = FileStorage.__objects[key]
+        #     return temp
+        # else:
+        #     return FileStorage.__objects
+        if cls is not None:
+            if type(cls) == str:
+                cls = eval(cls)
+            cls_dict = {}
+            for k, v in self.__objects.items():
+                if type(v) == cls:
+                    cls_dict[k] = v
+            return cls_dict
+        
+        return self.__objects
+
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        # self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        self.__objects["{}.{}".format(type(obj).__name__, obj.id)] = obj
+
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -32,12 +45,21 @@ class FileStorage:
                 temp[key] = val.to_dict()
             json.dump(temp, f)
 
+        # odict = {o: self.__objects[o].to_dict() for o in self.__objects.keys()}
+        # with open(self.__file_path, "w", encoding="utf-8") as f:
+        #     json.dump(odict, f)
+
+
     def delete(self, obj=None):
         """delete obj from __objects"""
-        if (obj is None):
-            return
-        if (obj):
-            del(obj)
+        # if (obj is None):
+        #     return
+        # if (obj):
+        #     del(obj)
+        try:
+            del self.__objects["{}.{}".format(type(obj).__name__, obj.id)]
+        except (AttributeError, KeyError):
+            pass
 
     def reload(self):
         """Loads storage dictionary from file"""
