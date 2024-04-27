@@ -49,14 +49,26 @@ class DBStorage:
 
     def all(self, cls=None):
         """query on the current database session"""
-        new_dict = {}
-        for clss in classes:
-            if cls is None or cls is classes[clss] or cls is clss:
-                objs = self.__session.query(classes[clss]).all()
-                for obj in objs:
-                    key = obj.__class__.__name__ + '.' + obj.id
-                    new_dict[key] = obj
-        return (new_dict)
+        if cls is None:
+            objs = self.__session.query(State).all()
+            objs.extend(self.__session.query(City).all())
+            objs.extend(self.__session.query(User).all())
+            objs.extend(self.__session.query(Place).all())
+            objs.extend(self.__session.query(Review).all())
+            objs.extend(self.__session.query(Amenity).all())
+        else:
+            if type(cls) == str:
+                cls = eval(cls)
+            objs = self.__session.query(cls)
+        return {"{}.{}".format(type(o).__name__, o.id): o for o in objs}
+        # new_dict = {}
+        # for clss in classes:
+        #     if cls is None or cls is classes[clss] or cls is clss:
+        #         objs = self.__session.query(classes[clss]).all()
+        #         for obj in objs:
+        #             key = obj.__class__.__name__ + '.' + obj.id
+        #             new_dict[key] = obj
+        # return (new_dict)
 
     def new(self, obj):
         """
@@ -81,6 +93,7 @@ class DBStorage:
         """ reload method """
         Base.metadata.create_all(self.__engine)
         ses = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        print(ses)
         Session = scoped_session(ses)
         print(Session)
         self.__session = Session
