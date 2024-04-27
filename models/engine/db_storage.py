@@ -90,13 +90,14 @@ class DBStorage:
     def reload(self):
         """ reload method """
         Base.metadata.create_all(self.__engine)
+        print(self.__engine)
         ses = sessionmaker(bind=self.__engine, expire_on_commit=False)
         print(ses)
         Session = scoped_session(ses)
         print(Session)
-        self.__session = Session
+        self.__session = Session()
 
     def close(self):
         """ close method """
-        # self.__session.close()
-        self.__session.remove()
+        self.__session.close()
+        # self.__session.remove()
