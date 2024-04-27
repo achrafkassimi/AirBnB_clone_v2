@@ -13,8 +13,8 @@ class State(BaseModel, Base):
     """
     This is the class for State
     """
+    __tablename__ = 'states'
     if models.storage_t == "db":
-        __tablename__ = 'states'
         name = Column(String(128), nullable=False)
         cities = relationship("City", backref="state", cascade="all, delete")
     else:
@@ -38,5 +38,4 @@ class State(BaseModel, Base):
             for city in models.storage.all(City).values():
                 if city.state_id == self.id:
                     city_list.append(city)
-
             return city_list
