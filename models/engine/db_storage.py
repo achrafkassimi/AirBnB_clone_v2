@@ -92,8 +92,10 @@ class DBStorage:
         """ reload method """
         # Base.metadata.drop_all(bind = self.__engine)
         # Base.metadata.create_all(self.__engine)
-        Base.metadata.tables["cities"].create(bind = self.__engine)
-        Base.metadata.tables["states"].create(bind = self.__engine)
+        if not self.__engine.dialect.has_table(self.__engine, 'cities'):
+            Base.metadata.tables["cities"].create(bind = self.__engine)
+        if not self.__engine.dialect.has_table(self.__engine, 'states'):
+            Base.metadata.tables["states"].create(bind = self.__engine)
         # print(self.__engine)
         ses = sessionmaker(bind=self.__engine, expire_on_commit=False)
         # print(ses)
