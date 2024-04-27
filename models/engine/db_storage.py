@@ -92,18 +92,7 @@ class DBStorage:
     def reload(self):
         """ reload method """
         # Base.metadata.drop_all(bind = self.__engine)
-        # Base.metadata.create_all(self.__engine)
-
-        if not self.__engine.dialect.has_table(self.__engine, 'cities'):
-            table_models = importlib_metadata.import_module('models.cities')
-            ORMTable = getattr(table_models, 'cities')
-            ORMTable.__table__.create(bind=self.__engine, checkfirst=True)
-
-        if not self.__engine.dialect.has_table(self.__engine, 'states'):
-            table_models = importlib_metadata.import_module('models.states')
-            ORMTable = getattr(table_models, 'states')
-            ORMTable.__table__.create(bind=self.__engine, checkfirst=True)
-
+        Base.metadata.create_all(self.__engine)
         # print(self.__engine)
         ses = sessionmaker(bind=self.__engine, expire_on_commit=False)
         # print(ses)
