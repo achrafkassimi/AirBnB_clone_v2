@@ -92,20 +92,20 @@ class DBStorage:
             self.__session.delete(obj)
             # self.save()
 
-    def reload(self): #, remove=False
+    def reload(self, remove=False):
         """ reload method """
         Base.metadata.create_all(self.__engine)
         session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
         Session = scoped_session(session_factory)
-        # if remove:
-        #     Session.remove()
+        if remove:
+            Session.remove()
         self.__session = Session()
 
     def close(self):
         """ close method """
-        self.__session.close()
-        # self.reload(remove=True)
+        # self.__session.close()
+        self.reload(remove=True)
 
     # def reload(self):
     #     """
